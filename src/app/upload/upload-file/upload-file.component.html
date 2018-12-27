@@ -1,0 +1,69 @@
+<div [ngClass]="{'loading-indicator':loading}">
+  <mat-spinner [style.display]="loading ? 'block' : 'none'" ></mat-spinner>
+</div>
+<mat-card class="panel">
+  <mat-card-header>
+    <mat-card-title>Subir archivo</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <file-base64-input name="file" text="Subir archivo" (messageError)=errorFile($event) accept="image/jpg, image/jpeg, application/pdf" (loading)=loading_($event) [multiple]=true (read)="loadFile($event)" [showInputFileName]=true></file-base64-input>
+    <button type="button" class="margin_btn mr-3" mat-raised-button color="warn" (click)="clear()">
+      <mat-icon>clear</mat-icon>
+      <span>Limpiar</span>
+    </button>
+    <mat-form-field  class="mr-3">
+      <mat-select placeholder="Clasificar documento" [(ngModel)]="selectedValue" (selectionChange)="classificationDocuments(selectedValue)" [disabled]="validateDisabledClasificationDocuments()">
+        <mat-option *ngFor="let classification of classifications" [value]="classification.value">
+          {{classification.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button  type="button" [ngClass]="{'button_process':!procesing}" mat-raised-button  [disabled]="procesing" (click)="procesingFiles()">
+      <mat-icon>send</mat-icon>
+      <span>Procesar</span>
+    </button>
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [disabled]="this.dataSource.data.length == 0"
+              [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(row) : null"
+              [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef> No. </th>
+          <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Nombre del archivo </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="extention">
+          <th mat-header-cell *matHeaderCellDef> Extencion </th>
+          <td mat-cell *matCellDef="let element"> {{element.extention}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> status </th>
+          <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+        </ng-container>
+        <ng-container matColumnDef="classification">
+            <th mat-header-cell *matHeaderCellDef> Tipo de documento </th>
+            <td mat-cell *matCellDef="let element"> {{ statusArray[element.classification]}} </td>
+          </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+    
+  </mat-card-content>
+</mat-card>

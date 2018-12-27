@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Entrenador</h2>
+<mat-dialog-content class="mat-typography">
+  <div class="row" >
+  
+    <div class="col-md-12 col-lg-12 col-sm-12 image_conten">
+      <mat-form-field>
+        <mat-select placeholder="Tipo de Documento"  [(ngModel)]="type_document" >
+          <mat-option *ngFor="let opcion of opciones" [value]="opcion.valor">
+            {{opcion.texto }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <img-map
+        #imgMap
+        [src]="helperService.imageFormat(image)"
+        markerRadius="30"
+        [markers]="markers"
+        (mark)="onMark($event)"
+        (change)="onChange($event)">
+      </img-map>
+
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button type="button"  class="btn btn-warning margin-r" (click)="removeMarkerAll()" [disabled]="this.markers.length == 0">Limpiar</button>
+  <button type="button"  class="btn button_save margin-r" (click)="save()" [disabled]="validateSave()">Guardar</button>
+  <button type="button" mat-dialog-close class="btn btn-danger" >Cerrar</button>
+</mat-dialog-actions>

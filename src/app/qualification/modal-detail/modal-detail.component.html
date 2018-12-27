@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Detalle</h2>
+<mat-dialog-content class="mat-typography">
+  <div class="row" >
+    <div class="col-md-5 col-lg-5 metadata">
+        <mat-tab-group> 
+          <mat-tab [label]="data.Titulo" *ngFor="let data of tabs?.Paginas[showPage].Modulos">
+            <div [ngSwitch]="elemet.Elemento" *ngFor="let elemet of data.Datos">
+              <mat-form-field *ngSwitchCase="'SELECT'">
+                <mat-select [placeholder]="elemet.Etiqueta"  [(ngModel)]="elemet.Valor" >
+                  <mat-option *ngFor="let opcion of elemet.Opciones" [value]="opcion.Valor">
+                    {{opcion.texto }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field *ngSwitchCase="'INPUT'">
+                <input matInput type="text" [placeholder]="elemet.Etiqueta" [(ngModel)]="elemet.Valor">
+                <button mat-button *ngIf="elemet.Valor" matSuffix mat-icon-button aria-label="Clear" (click)="elemet.Valor=''">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </mat-tab>
+      </mat-tab-group>
+    </div>
+    <div class="col-md-7 image_conten col-lg-7">
+      <ngb-carousel *ngIf="tabs" (slide)="onSlide($event)">
+        <ng-template ngbSlide *ngFor="let image of tabs.Paginas">
+          <img  [src]="helperService.imageFormat({'base64': image.ArchivoBase64, 'ext':'JPG'})" >
+        </ng-template>
+      </ngb-carousel>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button type="button"  (click)="save()" class="btn button_save margin-r" [disabled]="loading">Guardar</button>
+  <button type="button"  (click)="restart()" class="btn margin-r" [disabled]="loading">Deshacer</button>
+  <button type="button" mat-dialog-close class="btn btn-danger" [disabled]="loading">Cerrar</button>
+</mat-dialog-actions>

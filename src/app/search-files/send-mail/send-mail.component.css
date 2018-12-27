@@ -1,0 +1,28 @@
+.full-width{
+    width: 100%;
+}
+
+.textarea-height{
+    height: 70px;
+}
+
+.margin-r{
+    margin-right: 8px!important;
+}
+
+
+.button_save{
+    color: #ffff;
+    background: #0f4f4c;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label{
+    color: #0f4f4c !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: #0f4f4c !important;
+}
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: #0f4f4c !important;
+}

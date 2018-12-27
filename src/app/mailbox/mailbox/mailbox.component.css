@@ -1,0 +1,14 @@
+.panel{
+    height: auto;
+    margin: 13px;
+}
+
+table {
+    width: 100%;
+}
+
+.table-container {
+    height: 400px;
+    overflow: auto;
+}
+

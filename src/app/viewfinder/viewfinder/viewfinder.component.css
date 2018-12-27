@@ -1,0 +1,19 @@
+.mask {
+    position: absolute;
+    top: -50px;                     /* minus half the div size */
+    left: -50px;                    /* minus half the div size */
+    width: 100px;                   /* the div size */
+    height: 100px;                  /* the div size */
+    background-color: transparent;
+    border-radius: 100px;           /* the div size */
+    border: 50px solid white;       /* half the div size */
+    pointer-events: none;           /* send mouse events beneath this layer */
+}
+
+.stuff {
+    position: absolute;
+    width: 100px;                   /* the div size */
+    height: 100px;                  /* the div size */
+    overflow: hidden;               /* hide the excess of the mask border */
+    background-color: #CCC;
+}

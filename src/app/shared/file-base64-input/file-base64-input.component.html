@@ -1,0 +1,10 @@
+<button type="button"class="file_" mat-raised-button (click)="fileInput.click();setData()">
+  <mat-icon>cloud_upload</mat-icon>
+  <span>{{text}}</span>
+  <input type="file" #fileInput 
+    [attr.id]="id ? id : null"
+    [attr.name]="name ? name : null" accept="{{ accept || '*' }}"
+    [attr.multiple]="multiple ? true : null"
+    (change)="changeListener($event)" 
+    style="display:none;" />
+</button>

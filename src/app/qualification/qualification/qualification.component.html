@@ -1,0 +1,68 @@
+<div [ngClass]="{'loading-indicator':loading}">
+  <mat-spinner [style.display]="loading ? 'block' : 'none'" ></mat-spinner>
+</div>
+<mat-card class="panel">
+  <mat-card-header>
+    <mat-card-title>Calificación</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+  <mat-form-field class="mr-4">
+    <input matInput [min]="minDate" [max]="maxDate" [formControl]="startDate" [matDatepicker]="pickerStartDate" placeholder="Fecha de inicio">
+    <mat-datepicker-toggle matSuffix [for]="pickerStartDate"></mat-datepicker-toggle>
+    <mat-datepicker #pickerStartDate startView="year" [startAt]="minDate"></mat-datepicker>
+  </mat-form-field>        
+  <mat-form-field class="mr-3">
+    <input matInput [min]="startDate" [max]="maxDate" [formControl]="endDate" [matDatepicker]="pickerEndDate" placeholder="Fecha final">
+    <mat-datepicker-toggle matSuffix [for]="pickerEndDate"></mat-datepicker-toggle>
+    <mat-datepicker #pickerEndDate startView="year" [startAt]="startDate"></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field class="mr-4">
+    <mat-select placeholder="Seleciona calificaion"  [(ngModel)]="selectedValue" (selectionChange)=getInitValue(selectedValue)>
+      <mat-select-trigger>
+        {{selectedValueObjet.viewValue }}
+      </mat-select-trigger>
+      <mat-option *ngFor="let status_ of status" [value]="status_.value">
+          <mat-icon> {{status_.icon}}</mat-icon>{{status_.viewValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button  type="button" class="button_process mr-4" mat-raised-button (click)="getFileQualification()" >
+    <mat-icon>send</mat-icon>Consultar
+  </button>
+  <button  type="button" color="warn" mat-raised-button (click)="setInitValue()">
+    <mat-icon>delete</mat-icon>limpiar
+  </button>      
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="posicion">
+        <th mat-header-cell *matHeaderCellDef> No. </th>
+        <td mat-cell *matCellDef="let element"> {{element.posicion}} </td>
+      </ng-container>
+      <ng-container matColumnDef="name_origin">
+        <th mat-header-cell *matHeaderCellDef> Nombre del archivo </th>
+        <td mat-cell *matCellDef="let element"> {{element.name_origin}} </td>
+      </ng-container>
+      <ng-container matColumnDef="status_qualification">
+        <th mat-header-cell *matHeaderCellDef> Estatus de Calificación </th>
+        <td mat-cell *matCellDef="let element"> {{element.status_qualification}} </td>
+      </ng-container>
+      <ng-container matColumnDef="date_qualification">
+        <th mat-header-cell *matHeaderCellDef> Fecha de calificacion </th>
+        <td mat-cell *matCellDef="let element"> {{element.date_qualification | date: 'dd/MM/yyyy h:mm:ss a' }} </td>
+      </ng-container>
+      <ng-container matColumnDef="date_upload">
+        <th mat-header-cell *matHeaderCellDef> Fecha de carga </th>
+        <td mat-cell *matCellDef="let element"> {{element.date_upload | date: 'dd/MM/yyyy h:mm:ss a' }} </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> actiones </th>
+        <td mat-cell *matCellDef="let element"> <a [routerLink]="[{ outlets: { outlet: ['editar', element.id] } } ]" matTooltip="Calificar"><mat-icon>check_circle</mat-icon></a></td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+  </mat-card-content>
+</mat-card>
+<router-outlet name="outlet"></router-outlet>

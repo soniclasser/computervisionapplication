@@ -1,0 +1,57 @@
+.panel{
+    height: auto;
+    margin: 13px;
+}
+
+table {
+    width: 100%;
+}
+
+.table-container {
+    height: 400px;
+    overflow: auto;
+}
+.loading-indicator {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+  
+  .loading-indicator:before {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+  }
+
+
+.mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background{
+    background: #0f4f4c;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label{
+    color: #0f4f4c !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: #0f4f4c !important;
+}
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: #0f4f4c !important;
+}
+
+.button_process{
+    background: #0f4f4c;
+    color: #ffffff;
+}

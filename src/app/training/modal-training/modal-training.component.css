@@ -1,0 +1,33 @@
+.image_conten{
+    height: 650px;
+    width: 850px
+
+}
+
+.metadata{
+    height: 600px;
+
+}
+
+.margin-r{
+    margin-right: 8px!important;
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+    background-color: #0f4f4c !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label{
+    color: #0f4f4c !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: #0f4f4c !important;
+}
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: #0f4f4c !important;
+}
+
+.mat-form-field.mat-focused.mat-primary .mat-select-arrow{
+    color: #0f4f4c !important;
+}

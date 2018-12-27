@@ -1,0 +1,59 @@
+<div [ngClass]="{'loading-indicator':loading}">
+    <mat-spinner [style.display]="loading ? 'block' : 'none'" ></mat-spinner>
+</div>
+  <mat-card class="panel">
+      <mat-card-header>
+        <mat-card-title>Buscador</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="search">
+          <mat-slide-toggle class="example-margin" [checked]="checked" (change)="slideToggle($event)" *ngIf="options.length > 0"><strong>{{ slideText }}</strong></mat-slide-toggle>
+          <div class="row">
+            <div class="col-md-10 col-lg-10 col-sm-10" *ngIf="!checked">
+              <mat-form-field class="full-width">
+                <input type="text" matInput placeholder="Haz una busqueda" [(ngModel)]="value" maxlength="100">
+                <mat-hint align="end">{{value.length}} / 100</mat-hint>
+                <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+              <button type="button" [ngClass]="{'button_search': value.length > 0}"  class="spacing_button_search" [disabled]="value.length == 0" mat-raised-button color="primary" (click)="search(value)"><mat-icon>search</mat-icon></button>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12" *ngIf="checked">
+              <mat-form-field class="full-width">
+                <input type="text" placeholder="escribe y elige un calificador" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
+                  <mat-option *ngFor="let option of filteredOptions | async" [value]="option.Descripcion">
+                    {{option.Descripcion}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="posicion">
+              <th mat-header-cell *matHeaderCellDef>No.</th>
+              <td mat-cell *matCellDef="let element"> {{element.posicion}} </td>
+            </ng-container>
+            <ng-container matColumnDef="nombre_archivo">
+              <th mat-header-cell *matHeaderCellDef> Nombre del archivo </th>
+              <td mat-cell *matCellDef="let element"> {{element.nombre_archivo}} </td>
+            </ng-container>
+            <ng-container matColumnDef="fecha_carga">
+              <th mat-header-cell *matHeaderCellDef> Fecha de carga </th>
+              <td mat-cell *matCellDef="let element"> {{element.fecha_carga | date: 'dd/MM/yyyy h:mm:ss a' }} </td>
+            </ng-container>
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef> Acciones </th>
+              <td mat-cell *matCellDef="let element"> <a [routerLink]="[{ outlets: { outlet: ['enviar', element.id] } } ]" matTooltip="Enviar por correo"><mat-icon>mail</mat-icon></a><a matTooltip="Ver documento original" class="pointer" (click)="showDocumentOrigin(element.id)"><mat-icon>insert_drive_file</mat-icon></a></td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <router-outlet name="outlet"></router-outlet>
