@@ -1,0 +1,7 @@
+{
+    "/scaneadocumentos/*": {
+      "target": "http://172.24.1.217",
+      "secure": false,
+      "changeOrigin": true
+    }
+  }
