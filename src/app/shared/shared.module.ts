@@ -11,7 +11,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { HelperService } from './helper.service';
 import { HttpService } from '../core/http.service';
 import { FileService } from '../shared/file.service';
-import { ImgMapComponent } from 'ng2-img-map';
+//import { ImgMapComponent } from 'ng2-img-map'; Comentada porque esta deprecada la vercion de sus librerias
+import { MarkerComponent } from './marker/marker.component';
 
 
 @NgModule({
@@ -29,14 +30,16 @@ import { ImgMapComponent } from 'ng2-img-map';
   declarations: [
     PageNotFoundComponent,
     FileBase64InputComponent,
-    ImgMapComponent,
+    //ImgMapComponent,
+    MarkerComponent,
   ],
   exports:[
     FileBase64InputComponent,
+    MarkerComponent,
     FormsModule,
     MatButtonModule,
     ToastrModule,
-    ImgMapComponent,
+   //ImgMapComponent,
   ],
   providers: [
     HelperService,
