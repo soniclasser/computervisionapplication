@@ -2,9 +2,10 @@ import { Component, AfterViewInit, ViewChild, ViewEncapsulation, OnInit, Inject 
 import { MatDialog,MatDialogConfig, MAT_DIALOG_DATA,MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HelperService } from '../../shared/helper.service';
-import { ImgMapComponent } from 'ng2-img-map';
 import { FileService } from '../../shared/file.service';
 import { TrainingService } from '../training.service';
+import { MarkerComponent } from '../../shared/marker/marker.component'
+import { ImageModel } from '../../core/models/Image.model';
 
 @Component({
   selector: 'app-modal-training-init',
@@ -14,9 +15,19 @@ export class ModalTrainingInitComponent {
 
   public dialogConfig = new MatDialogConfig();
   public id_document:string;
-  public id_image:string
+  public id_image:string;
+  public point:ImageModel;
+  public backgrount:ImageModel;
+  public image = {
+    base64: '', 
+    ext:''
+  }
 
-  constructor(public dialog: MatDialog, private router:Router, private route:ActivatedRoute) {
+  constructor(public dialog: MatDialog, 
+    public helperService:HelperService,
+    private router:Router,
+    public fileService:FileService,
+    private route:ActivatedRoute) {
     this.route.params.subscribe((params) => {
       this.id_document = params.id_document;
       this.id_image = params.id_image;
@@ -26,25 +37,78 @@ export class ModalTrainingInitComponent {
     });
   }
 
+  setDataMarker(){
+    let image = new Image();
+    image.src = './assets/images/point.png'
+    this.point = {
+      image: image,
+      width: 15,
+      height:15,
+      xpos:0,
+      ypos:0,
+    }
+
+    this.backgrount = {
+      image: new Image(),
+      width: 800,
+      height:800,
+      xpos:0,
+      ypos:0,
+    }
+  }
+
    ngAfterViewInit() {
-    setTimeout(() => {
-        this.openDialog()
-    });
+      this.setDataMarker()
+      this.getImagesForTrainig();
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(ModalTrainingComponent,{data:{id_image:this.id_image,id_document:this.id_document}});
-    dialogRef.disableClose = true;
-    
-    
+    const dialogRef = this.dialog.open(
+      ModalTrainingComponent,
+      {
+        data: {
+          id_image:this.id_image,
+          id_document:this.id_document,
+          backgrount:this.backgrount,
+          point: this.point
+        }
+      });
+
+    dialogRef.disableClose = true;    
     dialogRef.afterClosed().subscribe(result => {
       sessionStorage.removeItem('tmp');
       this.router.navigate(['/entrenador/lista']); 
     });
   }
 
-}
+  getImagesForTrainig(){
+    let backgrount = new Image();
+    let image;
+    this.fileService.getFilesToBase64(this.id_document).finally(() =>{
+      if(image){
+        this.backgrount.image = backgrount;
+      }
+      this.openDialog();
+    }).subscribe((response)=>{
+      image = response.Imagenes.filter((image) => {return image.IdDocumentoImagen == this.id_image;});
+      if(image){
+        this.image.base64 =image[0].DocumentoImagen;
+        this.image.ext = image[0].MimeTypeIm
+        backgrount.src = this.helperService.getUrlBase64(this.image);
+      }
+     
+    },(error) => {
+      if(error.status == 500){
+        this.helperService.showError('Error', error.message || 'No se ha encontrado información del error');
+      }
 
+      if(error.status == 404 ){
+        this.helperService.showWarning('!Atencion!', error.message);
+      }
+    })  
+  }
+
+}
 
 @Component({
   selector: 'app-modal-training',
@@ -54,11 +118,9 @@ export class ModalTrainingInitComponent {
 })
 export class ModalTrainingComponent  implements OnInit {
 
+  @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
   public type_document;
-  public image = {
-    base64: '', 
-    ext:''
-  }
+  
   public opciones = [
     {
       texto:'INE',
@@ -74,47 +136,23 @@ export class ModalTrainingComponent  implements OnInit {
     }
   ]
 
+  public markers = []
   
   constructor(@Inject(MAT_DIALOG_DATA) public data:any, 
-    public helperService:HelperService,
     public dialogRef: MatDialogRef<ModalTrainingInitComponent>,
-    public fileService:FileService,
-    public trainingService:TrainingService) {
+    public trainingService:TrainingService,
+    public helperService:HelperService) {
   }
 
   ngOnInit() {  
-    this.getImagesForTrainig();
-  }
-  
-  @ViewChild('imgMap')
-  imgMap: ImgMapComponent;
-  markers: number[][] = [];
-  onMark(marker: number[]) {
-    //console.log('Markers', this.markers);
-  }
-  onChange(marker: number[]) {
-    //console.log('Marker', marker);
-  }
-  selectMarker(index: number) {
-    this.imgMap.markerActive = index;
-    this.imgMap.draw();
-  }
-  removeMarker(index: number) {
-    this.markers.splice(index, 1);
-    if (index === this.imgMap.markerActive) {
-      this.imgMap.markerActive = null;
-    } else if (index < this.imgMap.markerActive) {
-      this.imgMap.markerActive--;
-    }
-    this.imgMap.draw();
   }
 
 
   save(){
     let coordinantes =[];
 
-    for(let coordinantes_ of this.markers){
-      coordinantes.push({"Coordenadax":coordinantes_[0],"Coordenaday":coordinantes_[1]})
+    for(let marker of this.markers){
+      coordinantes.push({"Coordenadax":marker.xpos,"Coordenaday":marker.ypos})
     }
 
     let data ={
@@ -123,7 +161,6 @@ export class ModalTrainingComponent  implements OnInit {
       Tipo: this.type_document
     }
 
-    console.log(data);
     this.trainingService.saveCoordinates(data).finally(()=>{
 
     }).subscribe((response)=>{
@@ -134,12 +171,16 @@ export class ModalTrainingComponent  implements OnInit {
       }
     })
     
-
     this.dialogRef.close();
   }
 
   removeMarkerAll(){
-    this.markers = []
+    this.markerComponent.clear()
+  }
+
+  handle(event){
+    this.markers = event;
+    console.log(this.markers )
   }
 
   validateSave(){
@@ -147,26 +188,8 @@ export class ModalTrainingComponent  implements OnInit {
     if(this.type_document && this.markers.length > 0){
       response= false;
     }
-
     return response;
   }
 
-  getImagesForTrainig(){
-
-    this.fileService.getFilesToBase64(this.data.id_document).finally(() =>{
-
-    }).subscribe((response)=>{
-      let image = response.Imagenes.filter((image) => {return image.IdDocumentoImagen == this.data.id_image;});
-      this.image.base64 =image[0].DocumentoImagen;
-      this.image.ext = image[0].MimeTypeIm
-    },(error) => {
-      if(error.status == 500){
-        this.helperService.showError('Error', error.message || 'No se ha encontrado información del error');
-      }
-
-      if(error.status == 404 ){
-        this.helperService.showWarning('!Atencion!', error.message);
-      }
-    })  
-  }
+ 
 }
