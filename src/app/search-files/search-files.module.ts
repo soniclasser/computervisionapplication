@@ -26,6 +26,8 @@ import { SearchFilesComponent } from './search-files/search-files.component';
 //Services
 import { HttpService } from '../core/http.service';
 import { SearchFilesService } from './search-files.service';
+import { SendMailService } from './send-mail.service';
+import { from } from 'rxjs';
 
 @NgModule({
   imports: [
@@ -74,6 +76,7 @@ import { SearchFilesService } from './search-files.service';
   providers:[
     HttpService,
     SearchFilesService,
+    SendMailService,
     {provide: MatDialogRef, useValue: {}},
   ],
   entryComponents: [
