@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HelperService } from '../../shared/helper.service';
 import { Validators, FormGroup, FormBuilder, FormControl, FormArray, ValidatorFn } from '@angular/forms';
 import { SendMailModel } from '../../core/models/send-mail.model';
+import { SendMailService } from '../send-mail.service';
 
 
 @Component({
@@ -64,7 +65,8 @@ export class SendMailComponent implements OnInit {
   public data:any, 
   public helperService:HelperService, 
   private formBuilder: FormBuilder,
-  public dialogRef: MatDialogRef<SendMailComponent>) {}
+  public dialogRef: MatDialogRef<SendMailComponent>,
+  public sendMailService:SendMailService) {}
 
   ngOnInit() {
     let controls = this.options.map(option => new FormControl(false));
@@ -85,17 +87,23 @@ export class SendMailComponent implements OnInit {
   send(){
     let sendMailModel: SendMailModel;
     sendMailModel = {
-      Email:this.mailForm.controls.email.value,
+      DestinatariosPrincipales:[this.mailForm.controls.email.value],
       IdDocumento: this.data.id,
-      Titulo:this.mailForm.controls.title.value,
-      Cuerpo:this.mailForm.controls.body.value,
+      Asunto:this.mailForm.controls.title.value,
+      CuerpoMensaje:this.mailForm.controls.body.value,
       Usuario:'csuarez',
       ArchivoOrgigen:this.mailForm.controls.options['controls'][0].value,
       ArchivoTexto:this.mailForm.controls.options['controls'][1].value,
     }
-    console.log(sendMailModel)
-
-    this.dialogRef.close();
+console.log(sendMailModel)
+    this.sendMailService.sendMail(sendMailModel).finally(() => {
+      this.dialogRef.close();
+    })
+    .subscribe((response) => {      
+      this.helperService.showSuccess('¡Exito!', 'Mensaje enviado');
+    }, (error) => {
+      this.helperService.showError('Error', error.message || 'No se ha encontrado información del error');
+    })  
 
   }
 
