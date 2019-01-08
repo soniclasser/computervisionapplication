@@ -1,8 +1,8 @@
 export interface SendMailModel {
-    Email:string,
+    DestinatariosPrincipales:Array<string>,
     IdDocumento:number,
-    Titulo:string,
-    Cuerpo:string,
+    Asunto:string,
+    CuerpoMensaje:string,
     Usuario:string,
     ArchivoOrgigen:boolean,
     ArchivoTexto:boolean,
