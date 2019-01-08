@@ -14,7 +14,8 @@ import { ViewfinderComponent } from './viewfinder/viewfinder.component';
 import { ViewfinderRoutingModule } from './viewfinder-routing.module';
 
 //services
-import { ViewfinderService } from './viewfinder.service'
+import { ViewfinderService } from './viewfinder.service';
+import { HelperService } from '../shared/helper.service';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { ViewfinderService } from './viewfinder.service'
   declarations: [ViewfinderComponent],
   providers:[
     ViewfinderService,
+    HelperService,
   ]
 })
 export class ViewfinderModule { }

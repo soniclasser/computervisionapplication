@@ -1,7 +1,11 @@
-<div class="stuff">
-    <div  class="mask"> </div>
-  blah blah blah blah blah
-  blah blah blah blah blah
-  blah blah blah blah blah
+<div [ngClass]="{'loading-indicator':loading}">
+  <mat-spinner [style.display]="loading ? 'block' : 'none'" ></mat-spinner>
 </div>
-
+<mat-card class="panel">
+  <mat-card-content>  
+    <div class="noselect col-sm-12 col-lg-12 col-md-12" *ngFor="let page of text">
+      <h4>Pagina: {{ page.Pagina }}</h4>
+      <p>{{ page.Texto }}</p>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -10,7 +10,7 @@ export class ViewfinderService {
 
   constructor(private http:HttpService) { }
 
-  public uploadFile(data): Observable<any> {
-    return this.http.get(`?IdDocumento=${data.idDocuemtno}`)
+  public getDataForShow(id_documento): Observable<any> {
+    return this.http.get(`/scaneadocumentos/visualizaDatos?idDocumento=${id_documento}`)
   }
 }
