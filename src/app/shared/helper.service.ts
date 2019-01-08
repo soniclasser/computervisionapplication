@@ -100,6 +100,9 @@ export class HelperService {
 
   imageFormat(image:any){
     return this.sanitizer.bypassSecurityTrustResourceUrl(`data:${this.getMimeType(image.ext)};base64,${image.base64}`);
-   
+  }
+
+  getUrlBase64(image:any){
+    return `data:${this.getMimeType(image.ext)};base64,${image.base64}`
   }
 }
