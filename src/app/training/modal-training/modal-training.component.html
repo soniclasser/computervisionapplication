@@ -10,20 +10,12 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <img-map
-        #imgMap
-        [src]="helperService.imageFormat(image)"
-        markerRadius="30"
-        [markers]="markers"
-        (mark)="onMark($event)"
-        (change)="onChange($event)">
-      </img-map>
-
+      <app-marker [backgrount]="data.backgrount" [point]="data.point" (markersOut)="handle($event)"></app-marker>
     </div>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button type="button"  class="btn btn-warning margin-r" (click)="removeMarkerAll()" [disabled]="this.markers.length == 0">Limpiar</button>
+  <button type="button"  class="btn btn-warning margin-r" (click)="removeMarkerAll()" [disabled]="markers.length == 0">Limpiar</button>
   <button type="button"  class="btn button_save margin-r" (click)="save()" [disabled]="validateSave()">Guardar</button>
   <button type="button" mat-dialog-close class="btn btn-danger" >Cerrar</button>
 </mat-dialog-actions>
